@@ -5,7 +5,7 @@
 # Dependencies: nftables (nft), systemd (systemctl)
 # WARNING: WILL BREAK SERVICES!!!
 
-# Configuration
+# === CONFIG ===
 ALLOW_IPS="10.2.0.0/24"  # CHANGE, Supports CIDR or individual IPs (comma-separated)
 INBOUND_ACTION="drop"  # default drop
 OUTBOUND_ACTION="drop"  # default accept (Block super strict, will stop C2+RevShell and probably break more stuff)
