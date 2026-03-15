@@ -1,7 +1,7 @@
 # Nuke-Firewall.ps1
 # Author: Dylan Harvey
 # Description: Interactive firewall hardening script that locks down machine
-# WARNING: CAN BREAK SERVICES
+# WARNING: WILL BREAK SCORED SERVICES
 # YOU WILL NEED TO MANUALLY ADD RULES FOR SERVICES AND/OR DOMAIN, RUN Service-Firewall.ps1 NEXT TO ASSIST
 
 # === CONFIG ===
@@ -81,7 +81,7 @@ if ($DisableExistingRules) {
 }
 
 # --- SAFETY REVERT ---
-Write-Host "`n--- SAFETY REVERT ENABLED ---" -ForegroundColor Yellow
+Write-Host "`n--- SAFETY REVERT CHECK ---" -ForegroundColor Yellow
 Write-Host "Press 'Y' to KEEP these settings. Otherwise, reverting in 10 seconds..."
 
 $timer = 10

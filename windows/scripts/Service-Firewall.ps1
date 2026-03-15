@@ -179,7 +179,7 @@ if ($isDomain) {
 }
 
 # --- SAFETY REVERT ---
-Write-Host "`n--- SAFETY REVERT ENABLED ---" -ForegroundColor Yellow
+Write-Host "`n--- SAFETY REVERT CHECK ---" -ForegroundColor Yellow
 Write-Host "Press 'Y' to KEEP these settings. Otherwise, reverting in 10 seconds..."
 
 $timer = 10
