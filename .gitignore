@@ -65,6 +65,7 @@ output/
 tmp
 temp
 *.tmp
+*.temp
 temp.*
 
 # Logs
