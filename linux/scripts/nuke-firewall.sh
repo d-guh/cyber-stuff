@@ -4,6 +4,7 @@
 # Description: Interactive firewall hardening script that restores backup if you block yourself
 # Dependencies: nftables (nft), bash, tr, xargs, systemctl/service
 # WARNING: WILL BREAK SCORED SERVICES!!!
+# Note: Not as polished as windows variant, BE CAREFUL. Know what you are doing.
 
 # === CONFIG ===
 ALLOW_IPS="10.2.0.0/24"  # CHANGE, Supports CIDR and individual IPs (space or comma separated)
