@@ -1,8 +1,9 @@
+# Find-HiddenServices.ps1
 # Author: Dylan Harvey (modified from Joshua Wright's Original, see URL)
 # Script for finding hidden services.
 # https://www.sans.org/blog/defense-spotlight-finding-hidden-windows-services/
 
-# Locates potentially unwatnted hidden services
+# Locates potentially unwanted hidden services
 $hiddenServices = Compare-Object `
     -ReferenceObject (Get-Service | 
         Select-Object -ExpandProperty Name |

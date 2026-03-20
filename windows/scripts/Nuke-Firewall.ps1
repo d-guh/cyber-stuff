@@ -1,6 +1,6 @@
 # Nuke-Firewall.ps1
 # Author: Dylan Harvey
-# Description: Interactive firewall hardening script that locks down machine
+# Interactive firewall hardening script that locks down machine
 # WARNING: WILL BREAK SCORED SERVICES
 # YOU WILL NEED TO MANUALLY ADD RULES FOR SERVICES AND/OR DOMAIN, RUN Service-Firewall.ps1 NEXT TO ASSIST
 

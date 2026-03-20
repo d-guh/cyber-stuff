@@ -1,6 +1,6 @@
 # Service-Firewall.ps1
 # Author: Dylan Harvey
-# Description: Interactive firewall script that adds rules required for AD and common services
+# Interactive firewall script that adds rules required for AD and common services
 # Note: Designed to be run after Nuke-Firewall.ps1, but technically OK to be run standalone
 
 # === CONFIG ===
