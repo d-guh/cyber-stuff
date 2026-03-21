@@ -10,7 +10,10 @@ $DisableExistingRules = $true                    # DESTRUCTIVE ACTION!!! WILL BR
 $InboundAction        = "Block"                  # default Block
 $OutboundAction       = "Block"                  # default Allow (Block super strict, will break services but also stop C2+RevShell)
 $BACKUP_PATH          = ".\firewall_backup.wfw"  # Note this is execution directory, not script's directory
-$RULE_NAME            = "BLUE_MGMT"
+$BLUE_RULE_NAME       = "BLUE_MGMT"
+$BLACK_RULE_NAME      = "BTA"
+$BLACK_TEAM_EXE       = "C:\Program Files\BTA\bta.exe"  # Double check path
+$PROTECTED_RULES      = @($BLUE_RULE_NAME, $BLACK_RULE_NAME)
 
 # === HELPERS ===
 function Confirm-Admin {
@@ -66,9 +69,16 @@ Enable-Logging
 Enable-Firewall
 
 try {
+    New-NetFirewallRule -DisplayName $BLACK_RULE_NAME -Direction Outbound -Program $BLACK_TEAM_EXE -Action Allow -Description "Black team pls don't hate us" -ErrorAction Stop | Out-Null
+    Write-Host "[+] Created: $BLACK_RULE_NAME (Outbound)" -ForegroundColor Green
+} catch {
+    Write-Host "[!] Failed to create BTA rule: $($_.Exception.Message)" -ForegroundColor Red
+}
+
+try {
     Write-Host "[*] Applying rules..." -ForegroundColor Magenta
-    New-NetFirewallRule -DisplayName $RULE_NAME -Direction Inbound -Action Allow -RemoteAddress $AllowIPs -Description "Blue Team Inbound" -ErrorAction Stop | Out-Null
-    New-NetFirewallRule -DisplayName $RULE_NAME -Direction Outbound -Action Allow -RemoteAddress $AllowIPs -Description "Blue Team Outbound" -ErrorAction Stop | Out-Null
+    New-NetFirewallRule -DisplayName $BLUE_RULE_NAME -Direction Inbound -Action Allow -RemoteAddress $AllowIPs -Description "Blue Team Inbound" -ErrorAction Stop | Out-Null
+    New-NetFirewallRule -DisplayName $BLUE_RULE_NAME -Direction Outbound -Action Allow -RemoteAddress $AllowIPs -Description "Blue Team Outbound" -ErrorAction Stop | Out-Null
     Write-Host "[+] Created Rules Successfully" -ForegroundColor Green
 } catch {
     Write-Host "[!] Failed to create rules: $($_.Exception.Message)" -ForegroundColor Red
@@ -77,7 +87,7 @@ try {
 
 if ($DisableExistingRules) {
     Write-Host "[*] Disabling all existing rules..." -ForegroundColor Magenta
-    Get-NetFirewallRule | Where-Object { $_.DisplayName -ne $RULE_NAME -and $_.Enabled -eq 'True' } | Disable-NetFirewallRule
+    Get-NetFirewallRule | Where-Object { $_.DisplayName -notin $PROTECTED_RULES -and $_.Enabled -eq 'True' } | Disable-NetFirewallRule
 }
 
 # --- SAFETY REVERT ---

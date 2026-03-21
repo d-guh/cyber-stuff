@@ -121,7 +121,6 @@ function Test-Listening {
 Confirm-Admin
 Backup-Rules
 
-
 # --- GLOBAL RULES ---
 Write-Host "`n[*] Applying Global rules..." -ForegroundColor Magenta
 $IcmpTypes = @("3", "8", "11")
