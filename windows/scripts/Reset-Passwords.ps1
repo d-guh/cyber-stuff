@@ -8,7 +8,9 @@
     Regex patterns of usernames to target. If not supplied, targets all users.
 .PARAMETER Exclude
     Regex patterns of usernames to skip. If not supplied, uses defaults.
-    Defaults: "krbtgt", "^blackteam", "^seccdc"
+    Defaults: "krbtgt", "^blackteam", "^seccdc", '\$$'
+.PARAMETER Mode
+    Manually specify 'Domain' or 'Local' mode, default auto-detects. Be careful.
 .PARAMETER Random
     Generates a unique 16-character complex password for EVERY targeted user.
 .PARAMETER Test
@@ -34,6 +36,8 @@
 param(
     [string[]]$Users,
     [string[]]$Exclude = @("krbtgt", "^blackteam", "^seccdc", '\$$'),  # Just in case for machine passwords, really shouldn't happen though
+    [ValidateSet("Domain", "Local", "Auto")]
+    [string]$Mode = "Auto",
     [switch]$Random,
     [Alias("WhatIf")]
     [switch]$Test,
@@ -77,9 +81,19 @@ function Get-UserResponsePassword {
 }
 
 # Main
-$isDC = (Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4
+$detectedDC = (Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4
+if ($Mode -eq "Auto") {
+    $isDC = $detectedDC
+} else {
+    $isDC = ($Mode -eq "Domain")
+}
+
 $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
-Write-Host "[*] Target: $(if ($isDC) {'Domain Controller'} else {'Local Machine'})" -ForegroundColor Cyan
+Write-Host "[*] Operation Mode: $(if ($isDC) {'Domain'} else {'Local'})" -ForegroundColor Cyan
+if ($detectedDC -and -not $isDC) {
+    Write-Host "[!] WARNING: Running in Local mode on a Domain Controller!" -ForegroundColor Yellow
+}
+
 if ($Test) {
     Write-Host "[!] TEST RUN: No changes will be made." -ForegroundColor Yellow
 } else {
