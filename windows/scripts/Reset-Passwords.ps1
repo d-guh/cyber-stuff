@@ -33,7 +33,7 @@
 # Author: Dylan Harvey
 param(
     [string[]]$Users,
-    [string[]]$Exclude = @("krbtgt", "^blackteam", "^seccdc"),
+    [string[]]$Exclude = @("krbtgt", "^blackteam", "^seccdc", '\$$'),  # Just in case for machine passwords, really shouldn't happen though
     [switch]$Random,
     [Alias("WhatIf")]
     [switch]$Test,
@@ -127,17 +127,9 @@ foreach ($user in $finalList) {
     try {
         if (-not $Test) {
             if ($isDC) {
-                # Powershell command has some issues here
-                #Set-ADAccountPassword -Identity $user -NewPassword $currentSecure -Reset
-                net user $user $currentPlain /domain > $null #2>&1
+                Set-ADAccountPassword -Identity $user -NewPassword $currentSecure -Reset
             } else {
-                #Set-LocalUser -Name $user -Password $currentSecure
-                net user $user $currentPlain > $null #2>&1
-            }
-
-            if ($LASTEXITCODE -ne 0) {
-                # Stderr not redirected to null so if problem arises should be able to see issue
-                throw "Error Code $LASTEXITCODE"
+                Set-LocalUser -Name $user -Password $currentSecure -ErrorAction Stop
             }
 
             Write-Host "[+] Reset: $user" -ForegroundColor Green
