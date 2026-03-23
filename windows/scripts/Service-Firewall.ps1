@@ -22,22 +22,29 @@ $isDomain = $isDC -or $isDM
 # Ports: 49152-65535 (default, any range is ok, ex. 5000-10000)
 # PortsInternetAvailable: Y
 # UseInternetPorts: Y
+# TODO: There may be an option built into the FW for this
 $RPC_High_Ports = "49152-65535"
 
+# Access for domain only
 $AD_Services = @(
-    @{ Name="AD-DNS"; Port=53; Proto=@("TCP", "UDP") },
+    @{ Name="AD-DNS"; Port=53; Proto="UDP" },
     @{ Name="AD-Kerberos"; Port=88; Proto=@("TCP", "UDP") },
     @{ Name="AD-Web"; Port=@(80, 443); Proto="TCP" },
     @{ Name="AD-RPC-EPM"; Port=135; Proto=@("TCP", "UDP") },
     @{ Name="AD-LDAP"; Port=@(389, 636); Proto=@("TCP", "UDP") },
     @{ Name="AD-GC"; Port=@(3268, 3269); Proto=@("TCP", "UDP") },
-    @{ Name="AD-SMB"; Port=445; Proto=@("TCP", "UDP") },
+    @{ Name="AD-SMB"; Port=445; Proto="TCP" },
     @{ Name="AD-Kpwd"; Port=464; Proto=@("TCP", "UDP") },
     @{ Name="AD-NTP"; Port=123; Proto="UDP" },
     @{ Name="AD-Ephemeral-RPC"; Port=$RPC_High_Ports; Proto="TCP" }
 )
 
+# Access for domain and scoreboard
 $Services = @(
+    @{ Name="DNS"; Port=53; Proto="UDP" },
+    @{ Name="RDP"; Port=3389; Proto="TCP" },
+    @{ Name="WinRM/S"; Port=@(5985, 5986); Proto="TCP" },
+    @{ Name="SMB"; Port=445; Proto="TCP" },
     @{ Name="Web (HTTP/S)"; Port=@(80, 443); Proto="TCP" },
     @{ Name="Web HTTP Alt"; Port=@(8000, 8008, 8080); Proto="TCP" },
     @{ Name="Web HTTPS Alt"; Port=@(8443, 8444); Proto="TCP" },
@@ -48,7 +55,7 @@ $Services = @(
     @{ Name="MySQL/MariaDB"; Port=3306; Proto="TCP" },
     @{ Name="PostgreSQL"; Port=5432; Proto="TCP" },
     @{ Name="FTP"; Port=@(20, 21); Proto="TCP" },
-    @{ Name="SNMP"; Port=@(161, 162); Proto=@("UDP") }
+    @{ Name="SNMP"; Port=@(161, 162); Proto="UDP" }
 )
 
 # === HELPERS ===
